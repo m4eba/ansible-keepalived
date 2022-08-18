@@ -1,0 +1,9 @@
+---
+- name: facts
+  ansible.builtin.import_tasks: facts.yml
+- name: prepare
+  ansible.builtin.import_tasks: prepare.yml
+- name: install
+  ansible.builtin.import_tasks: install.yml
+- name: config
+  ansible.builtin.import_tasks: config.yml

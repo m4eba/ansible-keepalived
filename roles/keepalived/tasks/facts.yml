@@ -1,0 +1,11 @@
+---
+- name: get services
+  ansible.builtin.service_facts:
+
+- name: set running fact
+  ansible.builtin.set_fact:
+    keepalived_running: '{% if ansible_facts.services["keepalived.service"] is defined %}{{ ansible_facts.services["keepalived.service"].state == "running" }}{% else %}false{% endif %}'
+
+- name: debug keepalived_running
+  ansible.builtin.debug:
+    var: keepalived_running

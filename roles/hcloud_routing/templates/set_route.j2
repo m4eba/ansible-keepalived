@@ -1,0 +1,32 @@
+#!/bin/bash
+
+NETWORK="{{network_name}}"
+IP=$1
+SUBNET="{{virtual_ip_subnet}}"
+TOKEN="{{hcloud_token}}"
+
+NJSON=$(curl -H "Authorization: Bearer $TOKEN" "https://api.hetzner.cloud/v1/networks" | jq ".networks[] | select(.name==\"$NETWORK\")")
+NETWORKID=$(echo "$NJSON" | jq -r ".id")
+
+OLD_IP=$(echo "$NJSON" | jq -r ".routes[] | select(.destination==\"$SUBNET\") | .gateway  ")
+
+DATE=$(date)
+echo "$DATE $EPOCHREALTIME - $OLD_IP > $IP" >> /tmp/keepalived-verify.log
+
+
+if [[ -n $OLD_IP ]] && [ "$OLD_IP" != "$IP" ]; then
+curl \
+	-X POST \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json" \
+	-d "{\"destination\":\"$SUBNET\",\"gateway\":\"$OLD_IP\"}" \
+	"https://api.hetzner.cloud/v1/networks/$NETWORKID/actions/delete_route"
+fi
+if [ "$OLD_IP" != "$IP" ]; then
+curl \
+	-X POST \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json" \
+	-d "{\"destination\":\"$SUBNET\",\"gateway\":\"$IP\"}" \
+	"https://api.hetzner.cloud/v1/networks/$NETWORKID/actions/add_route"
+fi

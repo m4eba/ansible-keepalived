@@ -1,0 +1,12 @@
+namespace: m4eba
+name: keepalived
+version: 0.0.1
+readme: README.md
+authors:
+  - m4eba
+description: An ansible collection to install keepalived
+license_file: 'LICENSE'
+tags: ['keepalived']
+dependencies: {}
+repository: http://github.com/m4eba/ansible-keepalived
+issues: http://github.com/m4eba/ansible-keepalived/issues

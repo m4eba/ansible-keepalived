@@ -1,0 +1,59 @@
+---
+- name: git
+  ansible.builtin.git:
+    repo: 'https://github.com/acassen/keepalived.git'
+    dest: /opt/keepalived
+    version: '{{ keepalived_version }}'
+  register: git_result
+- name: debug git
+  ansible.builtin.debug:
+    var: git_result
+
+- name: test for makefile
+  ansible.builtin.stat:
+    path: /opt/keepalived/Makefile
+  register: stat_makefile
+
+- name: remove configure file
+  ansible.builtin.file:
+    path: '/opt/keepalived/configure'
+    state: absent
+  when: stat_makefile.stat.exists and git_result.changed
+
+- name: clean build
+  ansible.builtin.command: 'make clean'
+  args:
+    chdir: '/opt/keepalived/'
+  when: stat_makefile.stat.exists and git_result.changed
+
+- name: uninstall
+  ansible.builtin.command: 'make uninstall'
+  args:
+    chdir: '/opt/keepalived/'
+  when: stat_makefile.stat.exists and git_result.changed
+
+- name: build_setup
+  ansible.builtin.command: './build_setup'
+  args:
+    chdir: '/opt/keepalived/'
+    creates: '/opt/keepalived/configure'
+
+- name: configure
+  ansible.builtin.command: './configure'
+  args:
+    chdir: '/opt/keepalived/'
+    creates: '/opt/keepalived/Makefile'
+
+- name: make
+  ansible.builtin.command: 'make'
+  args:
+    chdir: '/opt/keepalived/'
+    creates: '/opt/keepalived/bin/keepalived'
+  register: make_result
+
+- name: make install
+  ansible.builtin.command: 'make install'
+  args:
+    chdir: '/opt/keepalived/'
+    creates: '/usr/local/sbin/keepalived'
+  notify: restart keepalived

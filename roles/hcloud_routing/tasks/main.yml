@@ -1,0 +1,27 @@
+---
+- name: install jq, needed for set_route
+  ansible.builtin.package:
+    name:
+      - jq
+    state: present
+- name: set_route
+  ansible.builtin.template:
+    src: set_route.j2
+    dest: /usr/local/bin/set_route
+    owner: root
+    group: root
+    mode: 0755
+- name: notify
+  ansible.builtin.template:
+    src: notify.j2
+    dest: /usr/local/bin/notify
+    owner: root
+    group: root
+    mode: 0755
+- name: masterrx
+  ansible.builtin.template:
+    src: masterrx.j2
+    dest: /usr/local/bin/masterrx
+    owner: root
+    group: root
+    mode: 0755

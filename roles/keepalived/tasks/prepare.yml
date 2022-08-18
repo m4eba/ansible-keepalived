@@ -1,0 +1,9 @@
+---
+- name: install packages
+  ansible.builtin.package:
+    name:
+      - gcc
+      - libssl-dev
+      - build-essential
+      - automake
+    state: present

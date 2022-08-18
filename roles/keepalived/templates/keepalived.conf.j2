@@ -1,0 +1,50 @@
+
+global_defs {
+        {% if keepalived_notify_fifo | length > 0 %}
+        notify_fifo {{keepalived_notify_fifo}}
+        {% endif %}
+}
+
+vrrp_script chk_process {           # Requires keepalived-1.1.13
+        script "killall -0 {{keepalived_process_name}}"     # cheaper than pidof
+        interval 2                      # check every 2 seconds
+        weight 2                        # add 2 points of prio if OK
+}
+
+vrrp_instance VI_1 {
+        interface {{keepalived_network_interface}}
+        {% if inventory_hostname == groups[keepalived_group_name][0] %}
+        state MASTER
+        priority 101                    # 101 on master, 100 on backup
+        {% else %}
+        state BACKUP
+        priority 100                    # 101 on master, 100 on backup
+        {% endif %}
+        virtual_router_id 51
+        {% if keepalived_virtual_ip is defined and keepalived_virtual_ip | length > 0 %}
+        virtual_ipaddress {
+            {{keepalived_virtual_ip}} label  {{keepalived_network_interface}}:{{keepalived_network_interface_label}}
+        }
+        {% endif %}
+        track_script {
+            chk_process
+        }
+        {% if keepalived_unicast %}
+        unicast_src_ip {{keepalived_ip}}
+        unicast_peer {
+          {% for s in groups[keepalived_group_name] %}
+          {% if s != inventory_hostname %}
+          {{ hostvars[s].keepalived_ip }}
+          {% endif %}
+          {% endfor %}
+        }
+        {% endif %}
+
+        {% if keepalived_notify | length > 0 %}
+        notify {{keepalived_notify}}
+        {% endif %}
+        {% if keepalived_notify_master_rx_lower_pri | length > 0 %}
+        notify_master_rx_lower_pri {{keepalived_notify_master_rx_lower_pri}}
+        {% endif %}
+
+}

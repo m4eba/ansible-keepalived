@@ -1,0 +1,12 @@
+---
+# defaults file for keepalived-role
+keepalived_version: 'v2.2.4'
+keepalived_config_template: 'keepalived.conf.j2'
+keepalived_process_name: 'haproxy'
+keepalived_network_interface: 'eth0'
+keepalived_network_interface_label: 'vip'
+keepalived_notify: ''
+keepalived_notify_master_rx_lower_pri: ''
+keepalived_notify_fifo: ''
+keepalived_group_name: 'keepalived'
+keepalived_unicast: true

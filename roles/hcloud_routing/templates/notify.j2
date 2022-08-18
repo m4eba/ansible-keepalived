@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "$(date) $EPOCHREALTIME - $3" >> /tmp/keepalived_log.txt
+if [ "$3" = "MASTER" ]; then
+  /usr/local/bin/set_route {{keepalived_ip}}
+fi
