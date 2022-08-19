@@ -2,7 +2,7 @@
 
 NETWORK="{{network_name}}"
 IP=$1
-SUBNET="{{virtual_ip_subnet}}"
+SUBNET=$2
 TOKEN="{{hcloud_token}}"
 
 NJSON=$(curl -H "Authorization: Bearer $TOKEN" "https://api.hetzner.cloud/v1/networks" | jq ".networks[] | select(.name==\"$NETWORK\")")
