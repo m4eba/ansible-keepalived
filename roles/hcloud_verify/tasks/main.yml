@@ -9,5 +9,5 @@
   args:
     executable: /bin/bash
 - name: call set_route if we are on master instance
-  ansible.builtin.command: /usr/local/bin/set_route {{ keepalived_ip }}
+  ansible.builtin.command: /usr/local/bin/set_route {{ keepalived_ip }} {{ keepalived_virtual_ip_subnet }}
   when: ip_out.rc == 0
