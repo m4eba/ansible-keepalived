@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "$(date) $EPOCHREALTIME - MASTER_RX_LOWER called" >> /tmp/keepalived_log.txt
-/usr/local/bin/set_route {{keepalived_ip}} {{keepalived_virtual_ip_subnet}}
+/usr/local/bin/set_route {{keepalived_ip}} {{keepalived_script_subnet}}

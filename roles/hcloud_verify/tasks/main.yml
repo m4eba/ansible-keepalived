@@ -2,12 +2,12 @@
 - name: test for ip
   ansible.builtin.shell: |
     set -e -o pipefail 
-    ifconfig | grep {{ keepalived_virtual_ip }}
+    ifconfig | grep {{ keepalived_verify_virtual_ip }}
   failed_when: false
   register: ip_out
   changed_when: false
   args:
     executable: /bin/bash
 - name: call set_route if we are on master instance
-  ansible.builtin.command: /usr/local/bin/set_route {{ keepalived_ip }} {{ keepalived_virtual_ip_subnet }}
+  ansible.builtin.command: /usr/local/bin/set_route {{ keepalived_ip }} {{ keepalived_script_subnet }}
   when: ip_out.rc == 0
