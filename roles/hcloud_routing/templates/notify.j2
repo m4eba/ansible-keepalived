@@ -2,5 +2,5 @@
 
 echo "$(date) $EPOCHREALTIME - $3" >> /tmp/keepalived_log.txt
 if [ "$3" = "MASTER" ]; then
-  /usr/local/bin/set_route {{keepalived_ip}} {{keepalived_script_subnet}}
+  {{keepalived_set_route_script_path}} {{keepalived_ip}} {{keepalived_script_subnet}}
 fi

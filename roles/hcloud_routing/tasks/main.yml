@@ -7,21 +7,21 @@
 - name: set_route
   ansible.builtin.template:
     src: set_route.j2
-    dest: /usr/local/bin/set_route
+    dest: '{{keepalived_set_route_script_path}}'
     owner: root
     group: root
     mode: 0755
 - name: notify
   ansible.builtin.template:
     src: notify.j2
-    dest: /usr/local/bin/notify
+    dest: '{{keepalived_notify_script_path}}'
     owner: root
     group: root
     mode: 0755
 - name: masterrx
   ansible.builtin.template:
     src: masterrx.j2
-    dest: /usr/local/bin/masterrx
+    dest: '{{keepalived_masterrx_script_path}}'
     owner: root
     group: root
     mode: 0755
