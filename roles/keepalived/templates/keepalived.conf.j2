@@ -1,50 +1,119 @@
-
+#jinja2:lstrip_blocks: True
 global_defs {
-        {% if keepalived_notify_fifo | length > 0 %}
-        notify_fifo {{keepalived_notify_fifo}}
-        {% endif %}
+  {% if keepalived_notify_fifo | length > 0 %}
+  notify_fifo {{keepalived_notify_fifo}}
+  {% endif %}
 }
 
-vrrp_script chk_process {           # Requires keepalived-1.1.13
-        script "killall -0 {{keepalived_process_name}}"     # cheaper than pidof
-        interval 2                      # check every 2 seconds
-        weight 2                        # add 2 points of prio if OK
+{% if keepalived_script is defined %}
+{% for name, value in keepalived_script.iteritems() %}
+vrrp_script {{name}} {
+  script {{value.script}}
+  {% if value.interval is defined %}
+  interval {{value.interval}}
+  {% endif %}
+  {% if value.weight is defined %}
+  weight {{value.weight}}
+  {% endif %}
+  {% if value.timeout %}
+  timeout {{value.timeout}}
+  {% endif %}
+  {% if value.rise %}
+  rise {{value.rise}}
+  {% endif %}
+  {% if value.fall %}
+  fall {{value.fall}}
+  {% endif %}
 }
+{% endfor %}
+{% endif %}
 
-vrrp_instance VI_1 {
-        interface {{keepalived_network_interface}}
-        {% if inventory_hostname == groups[keepalived_group_name][0] %}
-        state MASTER
-        priority 101                    # 101 on master, 100 on backup
-        {% else %}
-        state BACKUP
-        priority 100                    # 101 on master, 100 on backup
-        {% endif %}
-        virtual_router_id 51
-        {% if keepalived_virtual_ip is defined and keepalived_virtual_ip | length > 0 %}
-        virtual_ipaddress {
-            {{keepalived_virtual_ip}} label  {{keepalived_network_interface}}:{{keepalived_network_interface_label}}
-        }
-        {% endif %}
-        track_script {
-            chk_process
-        }
-        {% if keepalived_unicast %}
-        unicast_src_ip {{keepalived_ip}}
-        unicast_peer {
-          {% for s in groups[keepalived_group_name] %}
-          {% if s != inventory_hostname %}
-          {{ hostvars[s].keepalived_ip }}
-          {% endif %}
-          {% endfor %}
-        }
-        {% endif %}
+{% if keepalived_process is defined %}
+{% for name, value in keepalived_process.iteritems() %}
+vrrp_track_process {{name}} {
+  process {{value.process}}
+  {% if value.weight is defined %}
+  weight {{value.weight}}
+  {% endif %}
+  {% if value.quorum is defined %}
+  weight {{value.quorum}}
+  {% endif %}
+  {% if value.quorum_max is defined %}
+  weight {{value.quorum_max}}
+  {% endif %}
+  {% if value.fork_delay is defined %}
+  weight {{value.fork_delay}}
+  {% endif %}
+  {% if value.terminate_delay is defined %}
+  weight {{value.terminate_delay}}
+  {% endif %}
+  {% if value.delay is defined %}
+  weight {{value.delay}}
+  {% endif %}
+  {% if value.full_command is defined %}
+  weight {{value.full_command}}
+  {% endif %}
+}
+{% endfor %}
+{% endif %}
 
-        {% if keepalived_notify | length > 0 %}
-        notify {{keepalived_notify}}
-        {% endif %}
-        {% if keepalived_notify_master_rx_lower_pri | length > 0 %}
-        notify_master_rx_lower_pri {{keepalived_notify_master_rx_lower_pri}}
-        {% endif %}
+{% if keepavlied_instance is defined %}
+{% for name, value in keepalived_instance.items() %}
+vrrp_instance {{name}} {
+  interface {{value.network_interface}}
+  {% if value.state is defined %}
+  state {{value.state}}
+  {% endif %}
+  {% if value.virtual_router_id is defined %}
+  virtual_router_id {{value.virtual_router_id}}
+  {% else %}
+  virtual_router_id 51
+  {% endif %}
+  {% if value.virtual_ip is defined %}
+  virtual_ipaddress {
+    {{value.virtual_ip}} label  {{value.network_interface}}:{{value.network_interface_label}}
+  }
+  {% endif %}
+  {% if value.track_script is defined %}
+  track_script {
+    {{value.track_script}}
+  }
+  {% endif %}
+  {% if value.track_interface is defined %}
+  track_script {
+    {{value.track_interface}}
+  }
+  {% endif %}
+  {% if value.track_process is defined %}
+  track_script {
+    {{value.track_process}}
+  }
+  {% endif %}
+  {% if value.track_file is defined %}
+  track_script {
+    {{value.track_file}}
+  }
+  {% endif %}
+        
+
+  {% if value.unicast %}
+  unicast_src_ip {{keepalived_ip}}
+  unicast_peer {
+    {% for s in groups[keepalived_group_name] %}
+    {% if s != inventory_hostname %}
+    {{ hostvars[s].keepalived_ip }}
+    {% endif %}
+    {% endfor %}
+  }
+  {% endif %}
+
+  {% if value.notify | length > 0 %}
+  notify {{value.notify}}
+  {% endif %}
+  {% if value.notify_master_rx_lower_pri | length > 0 %}
+  notify_master_rx_lower_pri {{value.notify_master_rx_lower_pri}}
+  {% endif %}
 
 }
+{% endfor %}
+{% endif %}
