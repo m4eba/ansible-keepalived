@@ -57,7 +57,7 @@ vrrp_track_process {{name}} {
 {% endfor %}
 {% endif %}
 
-{% if keepavlied_instance is defined %}
+{% if keepalived_instance is defined %}
 {% for name, value in keepalived_instance.items() %}
 vrrp_instance {{name}} {
   interface {{value.network_interface}}
