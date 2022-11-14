@@ -6,7 +6,7 @@ global_defs {
 }
 
 {% if keepalived_script is defined %}
-{% for name, value in keepalived_script.iteritems() %}
+{% for name, value in keepalived_script.items() %}
 vrrp_script {{name}} {
   script {{value.script}}
   {% if value.interval is defined %}
@@ -29,7 +29,7 @@ vrrp_script {{name}} {
 {% endif %}
 
 {% if keepalived_process is defined %}
-{% for name, value in keepalived_process.iteritems() %}
+{% for name, value in keepalived_process.items() %}
 vrrp_track_process {{name}} {
   process {{value.process}}
   {% if value.weight is defined %}
