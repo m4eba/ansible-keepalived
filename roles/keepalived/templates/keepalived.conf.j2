@@ -36,22 +36,22 @@ vrrp_track_process {{name}} {
   weight {{value.weight}}
   {% endif %}
   {% if value.quorum is defined %}
-  weight {{value.quorum}}
+  quorum {{value.quorum}}
   {% endif %}
   {% if value.quorum_max is defined %}
-  weight {{value.quorum_max}}
+  quorum_max {{value.quorum_max}}
   {% endif %}
   {% if value.fork_delay is defined %}
-  weight {{value.fork_delay}}
+  fork_delay {{value.fork_delay}}
   {% endif %}
   {% if value.terminate_delay is defined %}
-  weight {{value.terminate_delay}}
+  terminate_delay {{value.terminate_delay}}
   {% endif %}
   {% if value.delay is defined %}
-  weight {{value.delay}}
+  delay {{value.delay}}
   {% endif %}
   {% if value.full_command is defined %}
-  weight {{value.full_command}}
+  full_command {{value.full_command}}
   {% endif %}
 }
 {% endfor %}
