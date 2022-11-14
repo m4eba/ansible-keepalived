@@ -15,13 +15,13 @@ vrrp_script {{name}} {
   {% if value.weight is defined %}
   weight {{value.weight}}
   {% endif %}
-  {% if value.timeout %}
+  {% if value.timeout is defined %}
   timeout {{value.timeout}}
   {% endif %}
-  {% if value.rise %}
+  {% if value.rise is defined %}
   rise {{value.rise}}
   {% endif %}
-  {% if value.fall %}
+  {% if value.fall is defined %}
   fall {{value.fall}}
   {% endif %}
 }
