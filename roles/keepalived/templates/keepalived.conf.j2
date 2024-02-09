@@ -3,6 +3,7 @@ global_defs {
   {% if keepalived_notify_fifo | length > 0 %}
   notify_fifo {{keepalived_notify_fifo}}
   {% endif %}
+  enable_script_security
 }
 
 {% if keepalived_script is defined %}
