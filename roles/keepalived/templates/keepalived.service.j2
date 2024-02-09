@@ -12,7 +12,8 @@ KillMode=process
 EnvironmentFile=-/etc/default/keepalived
 ExecStart=/usr/local/sbin/keepalived $DAEMON_ARGS
 ExecReload=/bin/kill -HUP $MAINPID
-
+# Keep restarting
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
