@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Command to run
+CMD="{{keepalived_set_route_script_path}} {{keepalived_ip}} {{keepalived_script_subnet}} /var/log/test_route.log"
+
+# Run every second for the first 15 seconds
+for i in {1..15}; do
+  $CMD
+  sleep 1
+done
+
+# After that, run every minute
+while true; do
+  $CMD
+  sleep 60
+done

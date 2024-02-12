@@ -2,5 +2,12 @@
 
 echo "$(date) $EPOCHREALTIME - $3" >> /tmp/keepalived_log.txt
 if [ "$3" = "MASTER" ]; then
-  {{keepalived_set_route_script_path}} {{keepalived_ip}} {{keepalived_script_subnet}}
+  {{keepalived_set_route_script_path}} {{keepalived_ip}} {{keepalived_script_subnet}} /var/log/keepalived-script.log
+  sudo /usr/bin/systemctl start test_route.service >> /tmp/keepalived_start.log 2>&1
+fi
+if [ "$3" = "BACKUP" ]; then  
+  sudo /usr/bin/systemctl stop test_route.service >> /tmp/keepalived_stop.log 2>&1
+fi
+if [ "$3" = "STOP" ]; then  
+  sudo /usr/bin/systemctl stop test_route.service >> /tmp/keepalived_stop.log 2>&1
 fi

@@ -1,0 +1,8 @@
+/var/log/keepalived-script.log {
+    daily               # Rotate the log file daily
+    missingok           # It's ok if the log file does not exist
+    rotate 3            # Keep 7 days worth of backlogs
+    compress            # Compress (gzip) log files on rotation
+    delaycompress       # Delay compression until the second log rotation cycle
+    notifempty          # Do not rotate the log file if it is empty    
+}

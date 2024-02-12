@@ -25,3 +25,37 @@
     owner: root
     group: root
     mode: 0755
+- name: masterrx
+  ansible.builtin.template:
+    src: logrotate.j2
+    dest: '/etc/logrotate.d/keepalived-script'
+    owner: root
+    group: root
+    mode: 0755
+- name: Ensure keepalived_script user is added to the syslog group
+  ansible.builtin.user:
+    name: keepalived_script
+    groups: syslog
+    append: yes
+- name: allow keepealived_script user to start test_route servie
+  ansible.builtin.blockinfile:
+    path: /etc/sudoers
+    block: |
+      keepalived_script ALL=(ALL) NOPASSWD: /usr/bin/systemctl start test_route.service, /usr/bin/systemctl stop test_route.service, /usr/bin/systemctl status test_route.service
+    marker: '# {mark} ANSIBLE MANAGED BLOCK for systemd test_route service control'
+- name: test_route
+  ansible.builtin.template:
+    src: test_route.j2
+    dest: '{{keepalived_test_route_script_path}}'
+    owner: root
+    group: root
+    mode: 0755
+- name: test_route service
+  ansible.builtin.template:
+    src: test_route.service.j2
+    dest: /etc/systemd/system/test_route.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd

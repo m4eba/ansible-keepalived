@@ -1,3 +1,4 @@
 keepalived_set_route_script_path: /usr/local/bin/set_route
 keepalived_notify_script_path: /usr/local/bin/notify
 keepalived_masterrx_script_path: /usr/local/bin/masterrx
+keepalived_test_route_script_path: /usr/local/bin/test_route

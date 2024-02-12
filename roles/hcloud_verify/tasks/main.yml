@@ -11,3 +11,14 @@
 - name: call set_route if we are on master instance
   ansible.builtin.command: '{{ keepalived_set_route_script_path }} {{ keepalived_ip }} {{ keepalived_script_subnet }}'
   when: ip_out.rc == 0
+- name: start route testing service
+  ansible.builtin.systemd:
+    name: test_route.service
+    state: started
+    enabled: yes
+  when: ip_out.rc == 0
+- name: stop route testing service
+  ansible.builtin.systemd:
+    name: test_route.service
+    state: stopped
+  when: ip_out.rc == 1

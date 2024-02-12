@@ -1,0 +1,11 @@
+[Unit]
+Description=Test route every 60 seconds
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{keepalived_test_route_script_path}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
